@@ -39,21 +39,23 @@
       (ts/parse-xml)
       (html/select [:span.pl])))
 
-(defn last-4-hours? [n html]
+(defn last-4-hours? [n-int html]
   (->> (html/select html [:time])
        (map #((comp :datetime :attrs) %))
        (map #(f/parse (f/formatter "yyyy-MM-dd HH:mm") %))
-       (map #(t/after? (t/minus (t/now) (t/hours 6) (t/minutes n)) %))))
+       (map #(t/after? (t/minus (t/now) (t/hours 6) (t/minutes n-int)) %))))
 
-(defn cl-scrape [n keyword]
+(defn cl-scrape [n-int keyword]
   (do (Thread/sleep 200)
       (let [recent-listings (->> (get-cl-listings keyword)
-                                 (take-while #(false? (first (last-4-hours? n %)))))]
+                                 (take-while #(false? (first (last-4-hours? n-int %)))))]
         (->>(html/select recent-listings [:a])
             (map parse-html)))))
 
-(defn cl-scrape! [n & phrases]
-  (->> (map #(cl-scrape n %) phrases)
-       (apply concat)
-       distinct
-       (map send-email)))
+(defn -main [n & phrases]
+  (let [n-int (read-string n)]
+    (->> (map #(cl-scrape n-int %) phrases)
+         (apply concat)
+         distinct
+         (map send-email)
+         doall)))

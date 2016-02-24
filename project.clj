@@ -9,4 +9,6 @@
                  [enlive "1.1.6"]
                  [clj-time "0.11.0"]
                  [hiccup "1.0.5"]
-                 [org.clojure/data.json "0.2.6"]])
+                 [org.clojure/data.json "0.2.6"]]
+  :main cl-scraper.core
+  :aot :all)
