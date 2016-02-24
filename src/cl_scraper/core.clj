@@ -6,7 +6,8 @@
             [clj-time.format :as f]
             [hiccup.core :as h]
             [postal.core :as p]
-            [clojure.data.json :refer [read-str]]))
+            [clojure.data.json :refer [read-str]])
+  (:gen-class))
 
 (def email-config
   (-> (slurp  "/Users/mairetilow/Documents/email_config.json")
